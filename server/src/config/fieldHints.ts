@@ -1,0 +1,37 @@
+export const FIELD_HINTS: Record<string, Record<string, string>> = {
+    "product.template": {
+        name: "Nome comercial do artigo tal como aparecerá no Odoo.",
+        default_code: "Referência interna ou código único do artigo.",
+        list_price: "Preço de venda ao público (sem IVA).",
+        standard_price: "Custo do artigo, usado para calcular margens.",
+        categ_id: "Categoria/família onde o artigo vai aparecer no catálogo.",
+        barcode: "Código de barras (EAN, UPC, etc.), se aplicável.",
+        sale_ok: "Se ativo, o artigo pode ser vendido.",
+        purchase_ok: "Se ativo, o artigo pode ser comprado ao fornecedor.",
+    },
+    "res.partner": {
+        name: "Nome do cliente ou fornecedor.",
+        email: "Email principal de contacto.",
+        phone: "Telefone principal de contacto.",
+        mobile: "Telemóvel de contacto.",
+        vat: "NIF/NIPC do cliente ou fornecedor.",
+        street: "Morada (rua/avenida) principal.",
+        city: "Localidade da morada.",
+        zip: "Código postal da morada.",
+        country_id: "País do cliente/fornecedor.",
+        customer_rank: "Indicador de que este parceiro é um cliente.",
+        supplier_rank: "Indicador de que este parceiro é um fornecedor.",
+    },
+    "crm.lead": {
+        name: "Título do lead ou oportunidade (ex.: Obra, Projeto, Cliente).",
+        contact_name: "Nome da pessoa de contacto principal.",
+        email_from: "Email de contacto do lead.",
+        phone: "Telefone de contacto do lead.",
+        mobile: "Telemóvel de contacto do lead.",
+        partner_id: "Cliente associado ao lead ou oportunidade.",
+        probability: "Probabilidade de fecho da oportunidade (em %).",
+        expected_revenue: "Receita esperada em caso de fecho da oportunidade.",
+        stage_id: "Etapa/fase atual do lead no funil comercial.",
+    },
+};
+
