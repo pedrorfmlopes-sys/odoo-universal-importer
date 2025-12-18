@@ -172,9 +172,17 @@ const ImportWizardPage = () => {
         setLoading(true);
         setError(null);
         try {
+            // Transform basic mapping to ImportMapping structure
+            const finalMapping: ImportMapping = importMode === 'basic'
+                ? Object.entries(mapping).reduce((acc, [key, col]) => ({
+                    ...acc,
+                    [key]: { mode: 'column', column: col } as FieldMapping
+                }), {} as ImportMapping)
+                : proMapping;
+
             const payload = {
                 model: model.model,
-                mapping: importMode === 'basic' ? mapping : proMapping,
+                mapping: finalMapping,
                 rows: legacyUploadedFile.rows,
                 options
             };
@@ -193,9 +201,17 @@ const ImportWizardPage = () => {
         if (!model || !legacyUploadedFile) return;
         setLoading(true);
         try {
+            // Transform basic mapping to ImportMapping structure
+            const finalMapping: ImportMapping = importMode === 'basic'
+                ? Object.entries(mapping).reduce((acc, [key, col]) => ({
+                    ...acc,
+                    [key]: { mode: 'column', column: col } as FieldMapping
+                }), {} as ImportMapping)
+                : proMapping;
+
             const payload = {
                 model: model.model,
-                mapping: importMode === 'basic' ? mapping : proMapping,
+                mapping: finalMapping,
                 rows: legacyUploadedFile.rows,
                 options
             };

@@ -40,7 +40,22 @@ export interface ImportRunResult {
     failures: { rowIndex: number; message: string }[];
 }
 
-export type FieldMappingMode = "column" | "constant" | "concat" | "booleanConstant";
+export type FieldMappingMode =
+    | "column"
+    | "constant"
+    | "concat"
+    | "booleanConstant"
+    | "relationalFromColumn"
+    | "relationalConstantExisting"
+    | "relationalConstantNew";
+
+export interface RelationalMappingConfig {
+    mainModel: string;
+    relatedModel: string;
+    displayField: string;
+    createIfNotFound?: boolean;
+    fixedId?: number;
+}
 
 export interface FieldMapping {
     mode: FieldMappingMode;
@@ -49,6 +64,7 @@ export interface FieldMapping {
     constantValue?: string;
     booleanValue?: boolean;
     separator?: string;
+    relational?: RelationalMappingConfig;
 }
 
 export type ImportMapping = Record<string, FieldMapping>;

@@ -7,6 +7,8 @@ import modelsRoutes from './routes/modelsRoutes';
 import fieldsRoutes from './routes/fieldsRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import importRoutes from './routes/importRoutes';
+import relationalRoutes from './routes/relationalRoutes';
+
 
 export const createExpressApp = () => {
     const app = express();
@@ -26,6 +28,8 @@ export const createExpressApp = () => {
     app.use('/api', fieldsRoutes);
     app.use('/api', uploadRoutes);
     app.use('/api', importRoutes);
+    app.use('/api', relationalRoutes);
+
 
     // Global Error Handler
     app.use(errorHandler);

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiClient } from '../../api/apiClient';
 import { MacroConfig } from '../../api/models';
-import { Layers, Briefcase, ShoppingCart, Truck, Wrench, FileText, Users, Box } from 'lucide-react';
+import { Layers, Briefcase, ShoppingCart, Wrench, FileText, Users } from 'lucide-react';
 
 const MacrosPage = () => {
     const [macros, setMacros] = useState<MacroConfig[]>([]);

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Import, Settings, Database } from 'lucide-react';
+import { LayoutDashboard, Import, Database } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();

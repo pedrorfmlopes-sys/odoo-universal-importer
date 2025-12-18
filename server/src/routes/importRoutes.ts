@@ -1,6 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { buildOdooPayloadFromRow } from '../utils/mappingUtils';
+import { resolveRelationalFieldsForRow } from '../utils/relationalUtils';
 import { getOdooConfig } from '../config/odooConfigStore';
+
 import { OdooClient } from '../odoo/odooClient';
 
 const router = Router();
@@ -84,13 +86,26 @@ router.post('/import/run', async (req: Request, res: Response, next: NextFunctio
             failures: [] as any[]
         };
 
+        const relationalCache = new Map<string, number>();
+
         // Process sequentially to avoid overwhelming Odoo (and handle dependencies if any)
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
 
-            // Skip empty rows early? Or try to map?
-            // Let's try mapping.
-            const payload = buildOdooPayloadFromRow(row, mapping);
+            // Map standard fields (non-relational modes)
+            const basePayload = buildOdooPayloadFromRow(row, mapping);
+
+            // Map relational fields (search/create)
+            let relationalPayload = {};
+            try {
+                relationalPayload = await resolveRelationalFieldsForRow(model, row, mapping, client, relationalCache);
+            } catch (relErr: any) {
+                summary.failed++;
+                summary.failures.push({ rowIndex: i, message: `Relational error: ${relErr.message}` });
+                continue;
+            }
+
+            const payload = { ...basePayload, ...relationalPayload };
 
             if (Object.keys(payload).length === 0) {
                 summary.failed++;

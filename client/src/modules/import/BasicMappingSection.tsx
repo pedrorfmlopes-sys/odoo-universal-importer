@@ -53,9 +53,10 @@ export const BasicMappingSection: React.FC<BasicMappingSectionProps> = ({
                             <select
                                 value={mapping[field.name] || ''}
                                 onChange={(e) => onChange(field.name, e.target.value)}
-                                className={`w-full text-sm border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 transition-all ${mapping[field.name] ? 'border-teal-500 bg-teal-50/30' : 'border-slate-300'}`}
+                                disabled={field.type === 'many2one'}
+                                className={`w-full text-sm border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 transition-all ${mapping[field.name] ? 'border-teal-500 bg-teal-50/30' : 'border-slate-300'} ${field.type === 'many2one' ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : ''}`}
                             >
-                                <option value="">-- Ignore --</option>
+                                <option value="">{field.type === 'many2one' ? '(Use PRO Mode)' : '-- Ignore --'}</option>
                                 {columns.map(col => (
                                     <option key={col} value={col}>{col}</option>
                                 ))}

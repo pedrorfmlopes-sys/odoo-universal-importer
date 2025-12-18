@@ -21,7 +21,13 @@ export interface ApiResponse<T = any> {
     error?: string;
 }
 
+export interface RelationalOption {
+    id: number;
+    name: string;
+}
+
 import { MacroConfig, OdooFieldMeta, ImportDryRunResult, ImportRunResult, FieldMappingMode, FieldMapping, ImportMapping } from './models';
+
 export type { MacroConfig, OdooFieldMeta, ImportDryRunResult, ImportRunResult, FieldMappingMode, FieldMapping, ImportMapping };
 
 
@@ -57,17 +63,29 @@ export const apiClient = {
     },
 
 
-    async saveOdooConfig(config: OdooConfig): Promise<ApiResponse> {
-        const res = await fetch(`${API_BASE}/config`, {
+    async runImport(payload: { model: string, mapping: ImportMapping, rows: any[], options: any }) {
+        const response = await fetch(`${API_BASE}/import/run`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(config),
+            body: JSON.stringify(payload),
         });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || 'Failed to save config');
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || 'Import failed');
         }
-        return res.json();
+        return response.json() as Promise<ImportRunResult>;
+    },
+
+    async fetchRelationalOptions(model: string, field: string, q?: string): Promise<RelationalOption[]> {
+        const params = new URLSearchParams({ model, field });
+        if (q) params.set("q", q);
+
+        const res = await fetch(`${API_BASE}/relational-options?${params.toString()}`);
+        if (!res.ok) {
+            throw new Error(`Failed to load relational options for ${model}.${field}`);
+        }
+        const data = await res.json();
+        return data.items as RelationalOption[];
     },
 
     async testOdooConfig(): Promise<ApiResponse> {
@@ -122,13 +140,13 @@ export const apiClient = {
         return res.json();
     },
 
-    async runImport(payload: any): Promise<ImportRunResult> {
-        const res = await fetch(`${API_BASE}/import/run`, {
+    async saveOdooConfig(config: OdooConfig): Promise<ApiResponse> {
+        const res = await fetch(`${API_BASE}/config`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(config)
         });
-        if (!res.ok) throw new Error('Import failed');
+        if (!res.ok) throw new Error('Failed to save config');
         return res.json();
     }
 };

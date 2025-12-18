@@ -32,17 +32,29 @@ router.get('/fields', async (req: Request, res: Response, next: NextFunction) =>
 
         // Transform to array and add hints
         const hints = FIELD_HINTS[model] || {};
-        const fieldList: OdooFieldMeta[] = Object.entries(fieldsMap).map(([name, info]: [string, any]) => ({
-            name,
-            string: info.string || name,
-            type: info.type || 'char',
-            required: !!info.required,
-            readonly: !!info.readonly,
-            help: info.help || undefined,
-            hint: hints[name] || undefined,
-            selection: info.selection,
-            relation: info.relation
-        }));
+
+        const IGNORED_FIELD_NAMES = new Set<string>([
+            "product_variant_ids",
+            "message_ids", "message_follower_ids", "message_main_attachment_id",
+            "activity_ids", "website_message_ids"
+        ]);
+
+        const IGNORED_FIELD_TYPES = new Set<string>(["one2many", "many2many"]);
+
+        const fieldList: OdooFieldMeta[] = Object.entries(fieldsMap)
+            .filter(([name, info]: [string, any]) => !IGNORED_FIELD_NAMES.has(name))
+            .filter(([name, info]: [string, any]) => !IGNORED_FIELD_TYPES.has(info.type))
+            .map(([name, info]: [string, any]) => ({
+                name,
+                string: info.string || name,
+                type: info.type || 'char',
+                required: !!info.required,
+                readonly: !!info.readonly,
+                help: info.help || undefined,
+                hint: hints[name] || undefined,
+                selection: info.selection,
+                relation: info.relation
+            }));
 
         res.json({ items: fieldList });
 
