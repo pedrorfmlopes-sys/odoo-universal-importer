@@ -1,76 +1,63 @@
 
+// v1.0.1 - Final Proof
 import * as path from 'path';
 import * as fs from 'fs';
 
 async function runSmoke() {
-    console.log("🚀 Starting Brand Bulk Smoke Test...");
+    console.log("🚀 Starting Brand Bulk Smoke Test (Final Check v1.0.1)...");
 
-    // 1. Setup Temp DB
-    const tempDbDir = path.join(process.cwd(), 'tmp');
-    if (!fs.existsSync(tempDbDir)) fs.mkdirSync(tempDbDir);
-    const tempDbPath = path.join(tempDbDir, `smoke_ce_${Date.now()}.db`);
+    const rootDir = process.cwd();
+    const tempDbPath = path.join(rootDir, 'tmp', `final_proof_ce.db`);
+    if (fs.existsSync(tempDbPath)) fs.unlinkSync(tempDbPath);
     process.env.CE_DB_PATH = tempDbPath;
 
-    console.log(`📂 Using temp DB: ${tempDbPath}`);
+    const dbPath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'db', 'ceDatabase');
+    const enrichmentPath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'services', 'ceEnrichmentService');
 
-    // @ts-ignore
-    const { getCeDatabase } = require('./src/modules/catalogEnricher/db/ceDatabase');
+    const { getCeDatabase } = require(dbPath);
+    const { ceEnrichmentService } = require(enrichmentPath);
+
     const db: any = getCeDatabase();
 
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS ce_web_products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            brand_id INTEGER,
-            category_name TEXT,
-            product_name TEXT,
-            product_url TEXT UNIQUE,
-            image_url TEXT,
-            guessed_code TEXT,
-            crawled_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `).run();
-
-    // 2. Define test scenarios
     const scenarios = [
-        { brand: 'Scarabeo', seed: 'https://scarabeoceramiche.it/en/products/tipologie/lavabi/' },
-        { brand: 'Ritmonio', seed: 'https://www.ritmonio.it/en/bath-shower/product/?code=PR43MA011' },
-        { brand: 'Bette', seed: 'https://www.my-bette.com/en/products/product-search' }
+        { brand: 'Ritmonio', url: 'https://www.ritmonio.it/it/bagno-doccia/prodotto/?code=PR43MA011' },
+        { brand: 'Scarabeo', url: 'https://scarabeoceramiche.it/categoria-prodotto/bagno/lavabi/' },
+        { brand: 'Bette', url: 'https://www.my-bette.com/en/products/built-in-bathtubs/bette-starlet' }
     ];
 
     for (const scenario of scenarios) {
-        console.log(`\n🔍 Testing ${scenario.brand}...`);
-
-        if (scenario.brand === 'Scarabeo') {
-            try {
-                // @ts-ignore
-                const scarabeoModule = require('./src/modules/catalogEnricher/brands/scarabeo/bulk');
-                if (scarabeoModule.runCrawler) {
-                    await scarabeoModule.runCrawler(db);
-                }
-            } catch (e: any) {
-                console.log("   ⚠️ Scarabeo execution warning:", e.message);
-            }
-        } else {
-            console.log(`   (Simulating discovery for ${scenario.brand})`);
-            db.prepare(`
-                INSERT OR IGNORE INTO ce_web_products (product_name, product_url, image_url)
-                VALUES (?, ?, ?)
-             `).run(`${scenario.brand} Test Product`, scenario.seed, 'https://example.com/img.jpg');
-        }
-
-        // 3. Validation
+        console.log(`\n🔍 Working on ${scenario.brand}: ${scenario.url}`);
         try {
-            const res = db.prepare('SELECT COUNT(*) as cnt FROM ce_web_products WHERE product_name LIKE ?').get(`%${scenario.brand}%`);
-            const count = res ? (res as any).cnt : 0;
-            console.log(`   📈 Products found for ${scenario.brand}: ${count}`);
-        } catch (e: any) {
-            console.error("   ❌ Validation failed:", e.message);
-        }
+            const result = await ceEnrichmentService.enrichProductFamily(scenario.url);
+            if (result) {
+                console.log(`   ✅ Extracted: ${result.name}`);
+                const vcount = result.associated_products_json ? JSON.parse(result.associated_products_json).length :
+                    (result.variants ? result.variants.length : 0);
+                const fcount = result.pdfUrls ? result.pdfUrls.length : 0;
+                console.log(`   📊 Stats: Variants=${vcount}, Files=${fcount}`);
+                db.prepare(`
+                    INSERT INTO ce_web_products 
+                    (product_name, product_url, image_url, guessed_code, variants_json, file_urls_json, associated_products_json, features_json)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `).run(
+                    result.name || scenario.brand, scenario.url, result.heroImage || '', result.itemReference || '',
+                    JSON.stringify(result.variants || []), JSON.stringify(result.pdfUrls || []),
+                    result.associated_products_json || '[]', result.features_json || '[]'
+                );
+            }
+        } catch (e: any) { console.error(`   ❌ Failed:`, e.message); }
     }
 
-    console.log("\n🏁 Smoke test finished.");
+    console.log("\n--- FINAL PROOF FOR PRODUCTION ---");
+    const products = db.prepare(`
+        SELECT product_name as Name, 
+               length(variants_json) as vlen, 
+               length(file_urls_json) as flen, 
+               length(associated_products_json) as alen
+        FROM ce_web_products
+    `).all();
+    console.table(products);
     db.close();
-    try { if (fs.existsSync(tempDbPath)) fs.unlinkSync(tempDbPath); } catch (e) { }
 }
 
 runSmoke().catch(console.error);
