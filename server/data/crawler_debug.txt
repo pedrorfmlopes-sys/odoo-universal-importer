@@ -12417,3 +12417,45 @@
 [2026-01-02T01:49:01.676Z] START_ANALYSIS: https://fimacf.com/prodotto/f6000-30-portasalviette-30-cm/ | Credential: None | OwnBrowser: false
 [2026-01-02T01:49:16.361Z] START_ANALYSIS: https://fimacf.com/prodotto/f6000-30-portasalviette-30-cm/ | Credential: None | OwnBrowser: false
 [2026-01-02T01:49:31.636Z] START_ANALYSIS: https://fimacf.com/prodotto/f6000-30-portasalviette-30-cm/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:49:41.498Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:49:48.260Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/bucket-clean-flush-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/bucket-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/butterfly-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/butterfly-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-cistern-b/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-high-cistern/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-high-cistern-b/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-low-cistern/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-monoblock/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/castellana-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/glam-twist-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/glam-twist-hung-wc-2/ (Job: bulk_1767354580497)
+[2026-01-02T11:49:48.485Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/cisterne/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:49:52.446Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[2026-01-02T11:49:52.595Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/orinatoio/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:49:56.127Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/glam-urinal/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/wish-urinal/ (Job: bulk_1767354580497)
+[2026-01-02T11:49:56.286Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/wc-a-terra/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:49:59.906Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/glam-twist-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moai-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moon-clean-flush-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/planet-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/teorema-2-0-clean-flush-wc/ (Job: bulk_1767354580497)
+[2026-01-02T11:50:00.091Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/wc-monoblocco/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:50:03.447Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moon-clean-flush-monoblock/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/planet-cistern/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/teorema-2-0-cistern/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/teorema-2-0-clean-flush-monoblock/ (Job: bulk_1767354580497)
+[2026-01-02T11:50:03.610Z] START_ANALYSIS: https://scarabeoceramiche.it/categoria-prodotto/tipologie/wc/wc-sospeso/ | Credential: None | OwnBrowser: false
+[2026-01-02T11:50:07.165Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moai-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moon-45-clean-flush-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/moon-clean-flush-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/planet-clean-flush-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/planet-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/teorema-2-0-clean-flush-hung-wc/ (Job: bulk_1767354580497)
+[Queue] PROCESS_ITEM: https://scarabeoceramiche.it/prodotto/teorema-2-0-twist-hung-wc/ (Job: bulk_1767354580497)

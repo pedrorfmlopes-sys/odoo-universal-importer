@@ -5,6 +5,7 @@ import { analyzePage, getEnrichmentPage } from './cePuppeteerService';
 import fs from 'fs';
 import path from 'path';
 import { ceVariantService, ProductVariant } from './ceVariantService';
+import { ritmonioExtractor } from '../brands/ritmonio/extractor';
 
 export interface EnrichedProduct {
     url: string;
@@ -346,73 +347,12 @@ export const ceEnrichmentService = {
 
             // G. RITMONIO SPECIALIZED EXTRACTION
             if (url.includes('ritmonio.it')) {
-                console.log("   🇮🇹 Ritmonio detected. Running specialized parser...");
-                try {
-                    // Find script containing product data
-                    const scriptText = $('script').map((_, el) => $(el).html()).get().join('\n');
-                    const productMatch = scriptText.match(/console\.log\("product",\s*'(.+?)'\);/);
-
-                    if (productMatch && productMatch[1]) {
-                        const rawJson = productMatch[1];
-                        // Unescape single quotes and other characters if needed (it looks like a JSON string inside a single-quoted JS string)
-                        // The file view shows it as console.log("product", '{"article"...}');
-                        // If it's single quoted, internal single quotes might be escaped or it might use double quotes for JSON keys.
-                        let cleanJson = rawJson;
-                        try {
-                            const ritData = JSON.parse(cleanJson);
-                            console.log(`   ✅ Parsed Ritmonio JSON for ${ritData.article}`);
-
-                            // 1. Associated Products (interiors, handles, etc)
-                            // The JSON has "products" array and info in "prodIntCode" / "prodExtCode"
-                            // And in Example 3: "products":[{"ID":"1612","article":"E0BA0115SX","type":"PRODUCT_INT","code":null,"exists":false}]
-                            if (ritData.products && Array.isArray(ritData.products)) {
-                                associatedProducts = ritData.products.map((p: any) => ({
-                                    article: p.article,
-                                    type: p.type,
-                                    id: p.ID,
-                                    url: p.article ? `https://www.ritmonio.it/en/bath-shower/product/?code=${p.article}` : null
-                                }));
-                            }
-
-                            // 2. Features / Finishes
-                            if (ritData.features) {
-                                richFeatures = ritData.features; // body finishes, handle finishes, etc.
-                            }
-
-                            // 3. Robust Category Path: Brand / Família / Coleção
-                            // The user requested: Marca / Família / Coleção
-                            const brand = "Ritmonio";
-
-                            // Detect Family (Top Level)
-                            let family = "Bath & Shower";
-                            if (url.includes('/kitchen/')) family = "Kitchen";
-
-                            // Detect Collection/Series
-                            const seriesName = ritData.seriesCode || "";
-                            let collection = seriesName || "";
-
-                            // Try to get series from the UI Link if JSON seriesCode is generic
-                            const seriesFromLink = $('.schedaMenu_link h4').first().text().trim();
-                            if (seriesFromLink) collection = seriesFromLink;
-
-                            // Final path override for Ritmonio
-                            realCategoryPath = [brand, family, collection].filter(x => x);
-
-                            // AUTO-DISCOVERY: If this is a combined product, maybe we should also "discover" the individual parts
-                            // as separate products to be crawled if they have independent URLs.
-                            // The associatedProducts mapping already does p.article -> URL.
-
-                            // Update metadata
-                            if (ritData.name && ritData.name.en) name = ritData.name.en;
-                            if (ritData.article) itemRef = ritData.article;
-
-                        } catch (je) {
-                            console.warn("   ⚠️ Ritmonio JSON Parse failed", je);
-                        }
-                    }
-                } catch (pe) {
-                    console.error("   ❌ Ritmonio specialized parser error", pe);
-                }
+                const ritResult = ritmonioExtractor.extract(url, html, $);
+                associatedProducts = ritResult.associatedProducts;
+                richFeatures = ritResult.richFeatures;
+                realCategoryPath = ritResult.realCategoryPath;
+                if (ritResult.name) name = ritResult.name;
+                if (ritResult.itemRef) itemRef = ritResult.itemRef;
             }
 
             // H. FIMA SPECIALIZED EXTRACTION

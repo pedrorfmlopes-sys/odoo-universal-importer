@@ -2,6 +2,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { Server as SocketIOServer } from 'socket.io';
 import path from 'path';
+import { betteConfig } from '../brands/bette/extractor';
 import { ceCredentialService } from './ceCredentialService';
 import { getCeDatabase } from '../db/ceDatabase';
 
@@ -846,7 +847,7 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
             let brandSubfolder = 'general';
             if (url.includes('fimacf.com')) brandSubfolder = 'fima';
             else if (url.includes('ritmonio.it')) brandSubfolder = 'ritmonio';
-            else if (url.includes('my-bette.com')) brandSubfolder = 'bette';
+            else if (url.includes(betteConfig.domain)) brandSubfolder = betteConfig.assetSubfolder;
 
             const assetsDir = path.join(process.cwd(), 'data', 'catalog-enricher', 'assets', brandSubfolder);
             if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
