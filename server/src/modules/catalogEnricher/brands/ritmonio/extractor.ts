@@ -11,6 +11,9 @@ export const ritmonioExtractor = {
         let richFeatures: any = null;
         let realCategoryPath: string[] = [];
 
+        let files: any[] = [];
+        let heroImage = '';
+
         try {
             const scriptText = $('script').map((_: any, el: any) => $(el).html()).get().join('\n');
             const productMatch = scriptText.match(/console\.log\("product",\s*'(.+?)'\);/);
@@ -21,11 +24,32 @@ export const ritmonioExtractor = {
 
                 if (ritData.products && Array.isArray(ritData.products)) {
                     associatedProducts = ritData.products.map((p: any) => ({
-                        article: p.article,
+                        article: p.article || p.code,
                         type: p.type,
                         id: p.ID,
-                        url: p.article ? `https://www.ritmonio.it/en/bath-shower/product/?code=${p.article}` : null
+                        url: (p.article || p.code) ? `https://www.ritmonio.it/en/bath-shower/product/?code=${p.article || p.code}` : null
                     }));
+                }
+
+                if (ritData.attachments && Array.isArray(ritData.attachments)) {
+                    ritData.attachments.forEach((a: any) => {
+                        if (a.url) {
+                            let format = 'pdf';
+                            if (a.url.toLowerCase().includes('.dwg')) format = 'dwg';
+                            else if (a.url.toLowerCase().includes('.zip')) format = 'zip';
+                            else if (a.url.toLowerCase().match(/\.(jpg|jpeg|png|webp)/)) format = 'image';
+
+                            files.push({
+                                name: a.type || 'Attachment',
+                                url: a.url,
+                                format
+                            });
+
+                            if (format === 'image' && !heroImage) {
+                                heroImage = a.url;
+                            }
+                        }
+                    });
                 }
 
                 if (ritData.features) {
@@ -38,7 +62,6 @@ export const ritmonioExtractor = {
 
                 const seriesName = ritData.seriesCode || "";
                 let collection = seriesName || "";
-
                 const seriesFromLink = $('.schedaMenu_link h4').first().text().trim();
                 if (seriesFromLink) collection = seriesFromLink;
 
@@ -56,7 +79,9 @@ export const ritmonioExtractor = {
             itemRef,
             associatedProducts,
             richFeatures,
-            realCategoryPath
+            realCategoryPath,
+            files,
+            heroImage
         };
     }
 };

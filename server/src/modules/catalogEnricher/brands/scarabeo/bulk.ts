@@ -43,7 +43,7 @@ async function processCategory(url: string, db: any) {
             if (productUrl && name && name.length > 2) {
                 try {
                     const stmt = db.prepare(`
-                        INSERT INTO ce_web_products (brand_id, category_name, product_name, product_url, image_url, guessed_code)
+                        INSERT INTO ce_web_products (brand_profile_id, category_name, product_name, product_url, image_url, guessed_code)
                         VALUES (?, ?, ?, ?, ?, ?)
                         ON CONFLICT(product_url) DO UPDATE SET
                             product_name = excluded.product_name,
@@ -51,7 +51,7 @@ async function processCategory(url: string, db: any) {
                             crawled_at = CURRENT_TIMESTAMP
                     `);
 
-                    stmt.run(1, 'Scarabeo', name, productUrl, imageUrl, '');
+                    stmt.run('scarabeo-profile', 'Scarabeo', name, productUrl, imageUrl, '');
                     productsFound++;
                 } catch (e: any) {
                     // console.error('Error inserting product:', e.message);

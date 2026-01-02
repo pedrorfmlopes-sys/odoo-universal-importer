@@ -1,63 +1,109 @@
 
-// v1.0.1 - Final Proof
 import * as path from 'path';
 import * as fs from 'fs';
 
 async function runSmoke() {
-    console.log("🚀 Starting Brand Bulk Smoke Test (Final Check v1.0.1)...");
+    console.log("🚀 Starting Production-Grade Brand Bulk Smoke Test (Hotfix v3)...");
 
     const rootDir = process.cwd();
-    const tempDbPath = path.join(rootDir, 'tmp', `final_proof_ce.db`);
-    if (fs.existsSync(tempDbPath)) fs.unlinkSync(tempDbPath);
+    const tempDbDir = path.join(rootDir, 'tmp');
+    if (!fs.existsSync(tempDbDir)) fs.mkdirSync(tempDbDir);
+    const tempDbPath = path.join(tempDbDir, `smoke_ce_v3_${Date.now()}.db`);
     process.env.CE_DB_PATH = tempDbPath;
 
-    const dbPath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'db', 'ceDatabase');
+    // Load Modules
+    const dbModulePath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'db', 'ceDatabase');
     const enrichmentPath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'services', 'ceEnrichmentService');
+    const scarabeoBulkPath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'brands', 'scarabeo', 'bulk');
 
-    const { getCeDatabase } = require(dbPath);
+    // @ts-ignore
+    const { getCeDatabase } = require(dbModulePath);
+    // @ts-ignore
     const { ceEnrichmentService } = require(enrichmentPath);
+    // @ts-ignore
+    const { runCrawler: runScarabeoCrawler } = require(scarabeoBulkPath);
 
     const db: any = getCeDatabase();
 
-    const scenarios = [
-        { brand: 'Ritmonio', url: 'https://www.ritmonio.it/it/bagno-doccia/prodotto/?code=PR43MA011' },
-        { brand: 'Scarabeo', url: 'https://scarabeoceramiche.it/categoria-prodotto/bagno/lavabi/' },
-        { brand: 'Bette', url: 'https://www.my-bette.com/en/products/built-in-bathtubs/bette-starlet' }
-    ];
+    // Support --brand argument
+    const args = process.argv.slice(2);
+    const brandArgIdx = args.indexOf('--brand');
+    const brandArg = (brandArgIdx > -1 && args[brandArgIdx + 1]) ? args[brandArgIdx + 1].toLowerCase() : null;
 
-    for (const scenario of scenarios) {
-        console.log(`\n🔍 Working on ${scenario.brand}: ${scenario.url}`);
-        try {
-            const result = await ceEnrichmentService.enrichProductFamily(scenario.url);
-            if (result) {
-                console.log(`   ✅ Extracted: ${result.name}`);
-                const vcount = result.associated_products_json ? JSON.parse(result.associated_products_json).length :
-                    (result.variants ? result.variants.length : 0);
-                const fcount = result.pdfUrls ? result.pdfUrls.length : 0;
-                console.log(`   📊 Stats: Variants=${vcount}, Files=${fcount}`);
-                db.prepare(`
-                    INSERT INTO ce_web_products 
-                    (product_name, product_url, image_url, guessed_code, variants_json, file_urls_json, associated_products_json, features_json)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                `).run(
-                    result.name || scenario.brand, scenario.url, result.heroImage || '', result.itemReference || '',
-                    JSON.stringify(result.variants || []), JSON.stringify(result.pdfUrls || []),
-                    result.associated_products_json || '[]', result.features_json || '[]'
-                );
-            }
-        } catch (e: any) { console.error(`   ❌ Failed:`, e.message); }
+    const allBrands = ['ritmonio', 'scarabeo', 'bette'];
+    const brandsToTest = brandArg ? [brandArg] : allBrands;
+    const results: any[] = [];
+
+    for (const brand of brandsToTest) {
+        const samplePath = path.join(rootDir, 'src', 'modules', 'catalogEnricher', 'brands', brand, 'golden_samples.json');
+        if (!fs.existsSync(samplePath)) {
+            console.warn(`⚠️ No golden samples for ${brand}`);
+            continue;
+        }
+
+        const sample = JSON.parse(fs.readFileSync(samplePath, 'utf8'));
+        console.log(`\n🔍 Validating ${sample.brand}...`);
+
+        // 1. Bulk/Crawl Test (Scarabeo only in this script for brevity, but could run others)
+        if (brand === 'scarabeo') {
+            console.log(`   🕸️ Running Bulk Crawler for ${brand}...`);
+            await runScarabeoCrawler(db);
+        }
+
+        // 2. Enrichment Test (Golden Variant URL)
+        console.log(`   💎 Enriching Golden URL: ${sample.golden_variant_product_url}`);
+        const result = await ceEnrichmentService.enrichProductFamily(sample.golden_variant_product_url);
+
+        if (result) {
+            // Save to DB
+            db.prepare(`
+                INSERT OR REPLACE INTO ce_web_products 
+                (product_name, product_url, image_url, guessed_code, variants_json, file_urls_json, associated_products_json, features_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `).run(
+                result.name || sample.brand,
+                sample.golden_variant_product_url,
+                result.heroImage || '',
+                result.itemReference || '',
+                JSON.stringify(result.variants || []),
+                JSON.stringify(result.pdfUrls || []),
+                result.associated_products_json || '[]',
+                result.features_json || '[]'
+            );
+
+            // Deep Validation
+            const row = db.prepare(`SELECT * FROM ce_web_products WHERE product_url = ?`).get(sample.golden_variant_product_url);
+
+            const variants = JSON.parse(row.variants_json || '[]');
+            const assoc = JSON.parse(row.associated_products_json || '[]');
+            const files = JSON.parse(row.file_urls_json || '[]');
+
+            const vCount = Math.max(variants.length, assoc.length);
+            const hasVariants = vCount >= sample.min_variants;
+            const hasFiles = sample.require_pdf ? (files.length > 0 || row.pdfUrls?.length > 0) : true;
+            const hasImage = !!row.image_url;
+            // Check SKU in variants
+            const hasSKU = variants.length > 0 ? variants.some((v: any) => v.sku_real || v.sku || v.article || v.code) : true;
+            const hasFinalCode = hasSKU || !!row.guessed_code;
+
+            const pass = hasVariants && hasFiles && hasImage && hasFinalCode;
+
+            console.log(`   ✅ Extracted: ${row.product_name}`);
+            console.log(`      - Variants: ${vCount} (Min: ${sample.min_variants}) -> ${hasVariants ? 'OK' : 'FAIL'}`);
+            console.log(`      - Files: ${files.length} (Req: ${sample.require_pdf}) -> ${hasFiles ? 'OK' : 'FAIL'}`);
+            console.log(`      - Image: ${hasImage ? 'OK' : 'FAIL'}`);
+            console.log(`      - Final Code/SKU: ${hasFinalCode ? 'OK' : 'FAIL'}`);
+
+            results.push({ brand, pass, vCount, fCount: files.length, dbPath: tempDbPath });
+        } else {
+            console.log(`   ❌ Enrichment failed for ${sample.brand}`);
+            results.push({ brand, pass: false, dbPath: tempDbPath });
+        }
     }
 
-    console.log("\n--- FINAL PROOF FOR PRODUCTION ---");
-    const products = db.prepare(`
-        SELECT product_name as Name, 
-               length(variants_json) as vlen, 
-               length(file_urls_json) as flen, 
-               length(associated_products_json) as alen
-        FROM ce_web_products
-    `).all();
-    console.table(products);
-    db.close();
+    console.log("\n🏁 Results Summary:");
+    console.table(results);
+    console.log(`\n👉 DB_PATH=${tempDbPath}`);
 }
 
 runSmoke().catch(console.error);

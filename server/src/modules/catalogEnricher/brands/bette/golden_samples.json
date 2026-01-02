@@ -1,0 +1,9 @@
+{
+    "brand": "Bette",
+    "seed_category_url": "https://www.my-bette.com/en/products/rectangular-baths",
+    "golden_variant_product_url": "https://www.my-bette.com/en/products/rectangular-baths/bette-starlet",
+    "golden_files_product_url": "https://www.my-bette.com/en/products/rectangular-baths/bette-starlet",
+    "min_variants": 0,
+    "require_pdf": true,
+    "require_3d": false
+}

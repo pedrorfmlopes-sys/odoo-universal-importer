@@ -2,9 +2,9 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { Server as SocketIOServer } from 'socket.io';
 import path from 'path';
-import { betteConfig } from '../brands/bette/extractor';
 import { ceCredentialService } from './ceCredentialService';
 import { getCeDatabase } from '../db/ceDatabase';
+import { brandRegistry } from '../brands/brandRegistry';
 
 let browserInstance: Browser | null = null;
 let activePage: Page | null = null;
@@ -845,9 +845,14 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
         if (extractedData && extractedData.files && extractedData.files.length > 0) {
             // Determine Brand Subfolder
             let brandSubfolder = 'general';
-            if (url.includes('fimacf.com')) brandSubfolder = 'fima';
-            else if (url.includes('ritmonio.it')) brandSubfolder = 'ritmonio';
-            else if (url.includes(betteConfig.domain)) brandSubfolder = betteConfig.assetSubfolder;
+            const handler = brandRegistry.getHandler(url);
+            if (handler?.config?.assetSubfolder) {
+                brandSubfolder = handler.config.assetSubfolder;
+            } else if (url.includes('fimacf.com')) {
+                brandSubfolder = 'fima';
+            } else if (url.includes('ritmonio.it')) {
+                brandSubfolder = 'ritmonio';
+            }
 
             const assetsDir = path.join(process.cwd(), 'data', 'catalog-enricher', 'assets', brandSubfolder);
             if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
