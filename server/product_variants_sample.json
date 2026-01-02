@@ -1,0 +1,85 @@
+{
+  "baseSku": "1250",
+  "variants": [
+    {
+      "dimension": "1700 x 750 x 450 / 1250 mm",
+      "dimension_normalized": "1700x750x450/1250mm",
+      "variant_code": "1250",
+      "sku_real": "1250",
+      "internal_variant_code": "GEN_1700x750x450/1250mm",
+      "pdf_urls": [
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/BE2D_Comodo_1250.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/BETZ_Comodo_1250.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/20250512_EPD_Vorl__ufige%20Version%20in%20Verifizierung.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/DS-BetteComodo-BW_1295-ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/20241112_LE_Bette%20Badewannen_spanisch.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/20230130_Garantiepass_Pflegehinweise_2022_web_Rev1_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/BetteComodo_Montageanleitung_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-750-mm-133379/2021-BetteComodo-ES-IT.pdf"
+      ],
+      "source": "ui-interactive",
+      "sku_source": "dom_after_select",
+      "strategy_id": "bette-adapter"
+    },
+    {
+      "dimension": "1700 x 800 x 450 / 1250 mm",
+      "dimension_normalized": "1700x800x450/1250mm",
+      "variant_code": "1253",
+      "sku_real": "1253",
+      "internal_variant_code": "GEN_1700x800x450/1250mm",
+      "pdf_urls": [
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/BE2D_Comodo_1253.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/BETZ_Comodo_1253.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/20250512_EPD_Vorl__ufige%20Version%20in%20Verifizierung.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/DS-BetteComodo-BW_1295-ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/20241112_LE_Bette%20Badewannen_spanisch.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/20230130_Garantiepass_Pflegehinweise_2022_web_Rev1_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/BetteComodo_Montageanleitung_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1700-800-mm-133384/2021-BetteComodo-ES-IT.pdf"
+      ],
+      "source": "ui-interactive",
+      "sku_source": "dom_after_select",
+      "strategy_id": "bette-adapter"
+    },
+    {
+      "dimension": "1800 x 800 x 450 / 1310 mm",
+      "dimension_normalized": "1800x800x450/1310mm",
+      "variant_code": "1251",
+      "sku_real": "1251",
+      "internal_variant_code": "GEN_1800x800x450/1310mm",
+      "pdf_urls": [
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/BE2D_Comodo_1251.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/BETZ_Comodo_1251.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/20250512_EPD_Vorl__ufige%20Version%20in%20Verifizierung.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/DS-BetteComodo-BW_1295-ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/20241112_LE_Bette%20Badewannen_spanisch.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/20230130_Garantiepass_Pflegehinweise_2022_web_Rev1_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/BetteComodo_Montageanleitung_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1800-800-mm-133378/2021-BetteComodo-ES-IT.pdf"
+      ],
+      "source": "ui-interactive",
+      "sku_source": "dom_after_select",
+      "strategy_id": "bette-adapter"
+    },
+    {
+      "dimension": "1900 x 900 x 450 / 1380 mm",
+      "dimension_normalized": "1900x900x450/1380mm",
+      "variant_code": "1252",
+      "sku_real": "1252",
+      "internal_variant_code": "GEN_1900x900x450/1380mm",
+      "pdf_urls": [
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/BE2D_Comodo_1252.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/BETZ_Comodo_1252.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/20250512_EPD_Vorl__ufige%20Version%20in%20Verifizierung.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/DS-BetteComodo-BW_1295-ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/20241112_LE_Bette%20Badewannen_spanisch.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/20230130_Garantiepass_Pflegehinweise_2022_web_Rev1_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/BetteComodo_Montageanleitung_ES.pdf",
+        "https://content.my-bette.com/produkt_downloads/BetteComodo-133376/BetteComodo-1900-900-mm-133377/2021-BetteComodo-ES-IT.pdf"
+      ],
+      "source": "ui-interactive",
+      "sku_source": "dom_after_select",
+      "strategy_id": "bette-adapter"
+    }
+  ]
+}

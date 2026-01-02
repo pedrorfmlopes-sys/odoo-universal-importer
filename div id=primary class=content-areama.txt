@@ -1,0 +1,150 @@
+<div id="primary" class="content-area"><main id="main" class="site-main" role="main"><ul class="products columns-4 fade-in">
+                <li class="product berocket_lmp_first_on_page" data-url="https://fimacf.com/en/collezioni/bagno/">
+                    <a href="https://fimacf.com/en/collezione/slide/">
+                        <div class="product-item-thumb">
+                            <img data-perfmatters-preload="" width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2025/05/SLIDE.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" fetchpriority="high" srcset="https://fimacf.com/wp-content/uploads/2025/05/SLIDE.jpg 1080w, https://fimacf.com/wp-content/uploads/2025/05/SLIDE-150x150.jpg 150w, https://fimacf.com/wp-content/uploads/2025/05/SLIDE-64x64.jpg 64w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Slide</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/so/">
+                        <div class="product-item-thumb">
+                            <img data-perfmatters-preload="" width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/12/SO.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/12/SO.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/12/SO-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px" fetchpriority="high">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">So</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/switch-on/">
+                        <div class="product-item-thumb">
+                            <img data-perfmatters-preload="" width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/SWITCH_ON.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/SWITCH_ON.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/SWITCH_ON-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px" fetchpriority="high">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Switch on</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/switch/">
+                        <div class="product-item-thumb">
+                            <img data-perfmatters-preload="" width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/switch.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/switch.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/switch-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px" fetchpriority="high">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Switch</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/texture-collection/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/TEXTURE-COLLECTION-1.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/TEXTURE-COLLECTION-1.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/TEXTURE-COLLECTION-1-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Texture Collection</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/nomos-go/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/NOMOS_GO.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/NOMOS_GO.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/NOMOS_GO-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Nomos Go</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/zeta/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/ZETA.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/ZETA.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/ZETA-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Zeta</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/20413/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/FLO.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/FLO.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/FLO-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Flo</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/snap/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/snap.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/snap.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/snap-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Snap</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/spillo-tech/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_TECH.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_TECH.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/SPILLO_TECH-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Spillo Tech</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/spillo-steel/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_STEEL.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_STEEL.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/SPILLO_STEEL-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Spillo Steel</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/spillo-up/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_UP.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/SPILLO_UP.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/SPILLO_UP-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Spillo Up</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/fit/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/FIT.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/FIT.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/FIT-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Fit</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/mast/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/MAST.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/MAST.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/MAST-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Mast</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/maxima/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/MAXIMA.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/MAXIMA.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/MAXIMA-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Maxima</div>
+                        </div>
+                    </a>
+                </li>
+                            <li class="product">
+                    <a href="https://fimacf.com/en/collezione/olivia/">
+                        <div class="product-item-thumb">
+                            <img width="1080" height="1080" src="https://fimacf.com/wp-content/uploads/2024/11/OLIVIA.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" decoding="async" srcset="https://fimacf.com/wp-content/uploads/2024/11/OLIVIA.jpg 1080w, https://fimacf.com/wp-content/uploads/2024/11/OLIVIA-150x150.jpg 150w" sizes="(max-width: 1080px) 100vw, 1080px">                        </div>
+                        <div class="product-item-title has-text-align-left">
+                            <div class="product-sku">Olivia</div>
+                        </div>
+                    </a>
+                </li>
+            </ul><div class="lmp_load_more_button br_lmp_button_settings" style="display: none;"><a class="lmp_button " style="font-size: 22px;color: #e30613;background-color: #ffffff;padding-top:px;padding-right:px;padding-bottom:px;padding-left:px;margin-top:px;margin-right:px;margin-bottom:px;margin-left:px; border-top: 0px solid #000; border-bottom: 0px solid #000; border-left: 0px solid #000; border-right: 0px solid #000; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;" href="#load_next_page">Mostra altro</a></div>
+            <div class="wp-block-button d-flex justify-content-center">
+                <a class="wp-block-button__link js-show-more" href="" data-term-id="148" data-total-found="24" data-posts-per-page="16">Load more</a>
+            </div>
+        </main></div>

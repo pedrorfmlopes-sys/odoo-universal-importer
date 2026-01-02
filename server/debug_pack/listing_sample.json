@@ -1,0 +1,18 @@
+{
+  "url": "https://www.my-bette.com/es/productos/baneras",
+  "final_url": "https://www.my-bette.com/es/productos/baneras",
+  "http_status": 200,
+  "page_title": "Bañeras de Bette - Encuentre su bañera perfecta",
+  "breadcrumbs": [
+    "Home",
+    "Productos",
+    "Bañeras"
+  ],
+  "detected_page_type": "product_list",
+  "facets": [],
+  "product_cards": [],
+  "pagination": {
+    "current_page": 1,
+    "next_url": null
+  }
+}

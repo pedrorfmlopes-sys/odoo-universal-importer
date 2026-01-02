@@ -4,6 +4,11 @@ export interface OdooConfig {
     userEmail: string;
     apiKey: string;
     importMode?: "basic" | "pro";
+
+    // AI Configuration
+    aiProvider?: string; // 'openai', 'anthropic', 'gemini', 'ollama'
+    aiApiKey?: string;
+    aiModel?: string;
 }
 
 export interface OdooFieldMeta {

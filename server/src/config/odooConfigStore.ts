@@ -4,7 +4,15 @@ import path from 'path';
 import { OdooConfig } from '../odoo/types';
 import { OdooClient } from '../odoo/odooClient';
 
-const CONFIG_FILE = path.resolve(process.cwd(), 'odoo-config.json');
+// Try to find odoo-config.json in current dir or server/
+const getPossiblePaths = () => {
+    const root = process.cwd();
+    return [
+        path.join(root, 'odoo-config.json'),
+        path.join(root, 'server', 'odoo-config.json'),
+        path.join(root, '..', 'odoo-config.json') // in case we are in server/
+    ];
+};
 
 // Global client cache
 let cachedClient: OdooClient | null = null;
@@ -12,7 +20,19 @@ let lastConfigHash: string = "";
 
 export const getOdooConfig = async (): Promise<OdooConfig | null> => {
     try {
-        const data = await fs.readFile(CONFIG_FILE, 'utf-8');
+        const paths = getPossiblePaths();
+        let data = "";
+        let found = false;
+
+        for (const p of paths) {
+            try {
+                data = await fs.readFile(p, 'utf-8');
+                found = true;
+                break;
+            } catch (e) { }
+        }
+
+        if (!found) return null;
         if (!data || data.trim() === '') return { url: '', db: '', userEmail: '', apiKey: '', importMode: 'basic' };
         try {
             const parsed = JSON.parse(data) as OdooConfig;
@@ -33,7 +53,17 @@ export const getOdooConfig = async (): Promise<OdooConfig | null> => {
 };
 
 export const saveOdooConfig = async (config: OdooConfig): Promise<void> => {
-    await fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
+    const paths = getPossiblePaths();
+    // Save to the first one that exists, or the first one in list
+    let savePath = paths[0];
+    for (const p of paths) {
+        try {
+            await fs.access(p);
+            savePath = p;
+            break;
+        } catch (e) { }
+    }
+    await fs.writeFile(savePath, JSON.stringify(config, null, 2), 'utf-8');
     // Invalidate client
     cachedClient = null;
     lastConfigHash = "";

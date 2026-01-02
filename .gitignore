@@ -3,3 +3,14 @@ node_modules
 dist
 build
 .DS_Store
+
+# runtime db + sqlite artifacts
+server/data/importer.db
+server/data/importer.db-*
+*.db
+*.db-wal
+*.db-shm
+# temp / exports / downloads
+server/temp_downloads/
+server/exports/
+server/debug_*

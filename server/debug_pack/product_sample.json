@@ -1,0 +1,34 @@
+{
+  "url": "https://www.my-bette.com/es/productos/baneras",
+  "http_status": 200,
+  "page_title": "Bañeras de Bette - Encuentre su bañera perfecta",
+  "breadcrumbs": [
+    "Home",
+    "Productos",
+    "Bañeras"
+  ],
+  "detected_page_type": "product_detail",
+  "text_candidates_for_item_number": [
+    {
+      "label": "Candidate",
+      "value": "A la referencia",
+      "context": "Bañeras y lavabos Bette en el lujoso Cheval Three "
+    }
+  ],
+  "images": [
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174602/image-thumb__174602__StageContentImage/Bette_Badelemente_Produkte_Badewannen_Header_01~-~media--cac93fe4--query.b227706a.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174619/image-thumb__174619__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Einbaubadewannen~-~media--cac93fe4--query.8455d611.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174620/image-thumb__174620__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Freistehende-Badewanne~-~media--cac93fe4--query.4a0645a3.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174621/image-thumb__174621__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Unterbaubadewannen~-~media--cac93fe4--query.7b259ea5.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/150791/image-thumb__150791__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Eck~-~media--cac93fe4--query.16837938.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174623/image-thumb__174623__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Rechteckbadewanne~-~media--cac93fe4--query.886821b4.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174593/image-thumb__174593__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Ovalbadewannen~-~media--cac93fe4--query.cd326ac3.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/alt/6908/image-thumb__6908__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Raumsparbadewannen_Milieu~-~media--cac93fe4--query.04de5ba8.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174594/image-thumb__174594__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Bade-Duschkombination_Milieu~-~media--cac93fe4--query.606ab7ed.webp",
+    "https://content.my-bette.com/content_pics/Produkte/Badewannen/%C3%9Cbersicht/174595/image-thumb__174595__ProductAccessTeaserImage/Bette_Badelemente_Produkte_Badewannen_Whirlpool-Badewannen~-~media--cac93fe4--query.78baf0b8.webp",
+    "https://privacy-proxy-server.usercentrics.eu/video/youtube/F_038iZFo8w-poster-image",
+    "https://privacy-proxy-server.usercentrics.eu/video/youtube/6Cm6HAK68n4-poster-image"
+  ],
+  "has_configurator": false,
+  "raw_html_excerpt": "<div><div class=\"section breadcrumb hidden md:block\"><div class=\"container\"><nav aria-label=\"Breadcrumb\"><ol itemscope=\"itemscope\" itemtype=\"https://schema.org/BreadcrumbList\" class=\"breadcrumb__items flex\"><li itemprop=\"itemListElement\" itemscope=\"itemscope\" itemtype=\"https://schema.org/ListItem\" class=\"breadcrumb__item\"><a href=\"/es/\" title=\"Home\" itemprop=\"item\" class=\"breadcrumb__link link\"><span itemprop=\"name\">Home</span></a> <meta itemprop=\"position\" content=\"1\"></li><li itemprop=\"itemListElement\" itemscope=\"itemscope\" itemtype=\"https://schema.org/ListItem\" class=\"breadcrumb__item\"><a href=\"/es/productos\" title=\"Productos\" itemprop=\"item\" class=\"breadcrumb__link link\"><span itemprop=\"name\">Productos</span></a> <meta itemprop=\"position\" content=\"2\"></li><li itemprop=\"itemListElement\" itemscope=\"itemscope\" itemtype=\"https://schema.org/ListItem\" class=\"breadcrumb__item\"><a href=\"/es/productos/baneras\" title=\"Bañeras\" tabindex=\"-1\" aria-current=\"page\" itemprop=\"item\" class=\"breadcru"
+}

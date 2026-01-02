@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Import, Database } from 'lucide-react';
+import { LayoutDashboard, Import, Database, Sparkles } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -7,6 +7,7 @@ const Sidebar = () => {
     const menuItems = [
         { path: '/', label: 'Dashboard', Icon: LayoutDashboard },
         { path: '/import', label: 'Importar', Icon: Import },
+        { path: '/catalog-enricher', label: 'Catálogo', Icon: Sparkles },
         { path: '/connection', label: 'Configuração', Icon: Database },
     ];
 

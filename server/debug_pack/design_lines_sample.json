@@ -1,0 +1,50 @@
+{
+  "design_lines_index_url": "https://www.my-bette.com/es/productos/lineas-de-diseno",
+  "collections": [
+    {
+      "name": "BetteSuno",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettesuno"
+    },
+    {
+      "name": "BetteArt",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/betteart"
+    },
+    {
+      "name": "BetteLux",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettelux"
+    },
+    {
+      "name": "BetteLoft",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/betteloft"
+    },
+    {
+      "name": "BetteComodo",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettecomodo"
+    },
+    {
+      "name": "BetteOne",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/betteone"
+    },
+    {
+      "name": "BetteComodo",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettecomodo"
+    },
+    {
+      "name": "BetteComodo",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettecomodo"
+    },
+    {
+      "name": "BetteLux",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettelux"
+    },
+    {
+      "name": "BetteLux",
+      "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettelux"
+    }
+  ],
+  "collection_page_sample": {
+    "url": "https://www.my-bette.com/es/productos/lineas-de-diseno/bettesuno",
+    "detected_page_type": "unknown",
+    "products_found_count": 77
+  }
+}

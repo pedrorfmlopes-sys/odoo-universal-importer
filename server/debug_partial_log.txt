@@ -1,0 +1,3 @@
+[2025-12-25T23:47:28.519Z] Request received.
+URLs (1): ["https://www.ritmonio.it/en/bath-shower/bath/traps/"]
+Options: undefined

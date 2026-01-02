@@ -1,0 +1,4 @@
+Job: bulk_1766706448520
+Profile: 145eff47-d3eb-4082-a846-a047b739e954
+URLs: 1
+DB: C:\Users\pedro\OneDrive\APPS\GitHub\odoo-universal-importer\server\data\importer.db

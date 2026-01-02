@@ -1,0 +1,7 @@
+{
+  "profileId": "145eff47-d3eb-4082-a846-a047b739e954",
+  "recipeId": "universal",
+  "urls": [
+    "https://www.ritmonio.it/en/bath-shower/bath/traps/"
+  ]
+}

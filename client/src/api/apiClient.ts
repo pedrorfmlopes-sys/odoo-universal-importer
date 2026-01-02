@@ -4,6 +4,11 @@ export interface OdooConfig {
     userEmail: string;
     apiKey: string;
     importMode?: 'basic' | 'pro';
+
+    // AI Configuration
+    aiProvider?: string;
+    aiApiKey?: string;
+    aiModel?: string;
 }
 
 

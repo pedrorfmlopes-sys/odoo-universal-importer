@@ -1,0 +1,89 @@
+
+=== 3D ANALYSIS FOR https://www.ritmonio.it/en/bath-shower/product/?code=068075_RCMB027&family=68052 ===
+Potential 3D Triggers found: 10
+
+{
+  "tag": "DIV",
+  "text": "3D models login | Register",
+  "class": "btnMenu_desk_rightBottom",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "DIV",
+  "text": "3D models login | Register",
+  "class": "btnMenu_desk_inner menu_user",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "A",
+  "text": "3D models login",
+  "class": "login-button",
+  "href": "https://www.ritmonio.it/en/user/login/?redir=https%3A%2F%2Fwww.ritmonio.it%2Fen%2Fbath-shower%2Fproduct%2F%3Fcode%3D068075_RCMB027%26family%3D68052",
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "DIV",
+  "text": "3D models login | Register",
+  "class": "",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "A",
+  "text": "3D models login",
+  "class": "login-button",
+  "href": "https://www.ritmonio.it/en/user/login/?redir=https%3A%2F%2Fwww.ritmonio.it%2Fen%2Fbath-shower%2Fproduct%2F%3Fcode%3D068075_RCMB027%26family%3D68052",
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "SCRIPT",
+  "text": "console.log(\"product\", '{\"article\":\"RCMB027\",\"type",
+  "class": "",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "DIV",
+  "text": "3D\nMODEL",
+  "class": "bottonieraScheda_btn ",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "A",
+  "text": "3D\nMODEL",
+  "class": "login-button show-notice noDecoration",
+  "href": "https://www.ritmonio.it/en/user/login/?redir=https://www.ritmonio.it/en/bath-shower/product/%2F%3Fcode%3D068075_RCMB027%26family%3D68052",
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "DIV",
+  "text": "3D\nMODEL",
+  "class": "bottonieraScheda_btn_interno",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+{
+  "tag": "H5",
+  "text": "3D\nMODEL",
+  "class": "",
+  "href": null,
+  "onclick": null,
+  "role": null
+}
+
+--- KNOWN DOWNLOAD LINKS ---
+https://www.ritmonio.it/en/download/?code=3916960137
+https://www.ritmonio.it/en/download/?code=2284946252
+    

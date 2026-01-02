@@ -9,12 +9,16 @@ import uploadRoutes from './routes/uploadRoutes';
 import importRoutes from './routes/importRoutes';
 import relationalRoutes from './routes/relationalRoutes';
 
+// Module Imports
+import { mountCatalogEnricher } from './modules/catalogEnricher';
+
 
 export const createExpressApp = () => {
     const app = express();
 
     app.use(cors());
-    app.use(express.json());
+    app.use(express.json({ limit: '50mb' }));
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
     // Health Check
     app.get('/', (req, res) => {
@@ -29,6 +33,9 @@ export const createExpressApp = () => {
     app.use('/api', uploadRoutes);
     app.use('/api', importRoutes);
     app.use('/api', relationalRoutes);
+
+    // Mount Modules
+    mountCatalogEnricher(app);
 
 
     // Global Error Handler
