@@ -1,0 +1,135 @@
+﻿
+> src\modules\catalogEnricher\services\cePuppeteerService.ts:586:export const analyzePage = async (url: string, 
+jobId?: string, options: { downloadAssets?: boolean, existingPage?: Page, noInteractions?: boolean, signal?: 
+AbortSignal } = {}): Promise<{ html: string; metadata: PageAnalysisResult }> => {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:587:    let browser: Browser | null = null;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:588:    let page: Page;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:589:    let ownBrowser = true;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:590:    let credentialId: string | undefined = undefined;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:591:    let variants: any[] = [];
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:592:    let associated: any[] = [];
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:593:    let html = ''; // Initialize html variable
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:594:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:595:    // Helper to check for abort
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:596:    const checkAbort = () => {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:597:        if (options.signal?.aborted) throw new 
+Error('AbortError');
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:598:    };
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:599:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:600:    // 1. Use existing page if provided
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:601:    if (options.existingPage) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:602:        page = options.existingPage;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:603:        ownBrowser = false;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:604:    } else {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:605:        // 2. Check Auth Requirement
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:606:        if (jobId) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:607:            try {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:608:                const db = getCeDatabase();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:609:                const job = db.prepare('SELECT 
+profile_id FROM ce_jobs WHERE id = ?').get(jobId) as { profile_id: string };
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:610:                if (job && job.profile_id) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:611:                    const profile = 
+db.prepare('SELECT auth_required, credential_id FROM ce_brand_profiles WHERE id = ?').get(job.profile_id) as any;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:612:                    if (profile && 
+profile.auth_required) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:613:                        credentialId = 
+profile.credential_id;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:614:                    }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:615:                }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:616:            } catch (e) { console.warn("DB Check 
+failed in analyzePage", e); }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:617:        }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:618:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:619:        if (credentialId) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:620:            console.log(`ðŸ” [Smart Harvester] Using 
+Authenticated Session for: ${url} (Cred: ${credentialId})`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:621:            page = await 
+getEnrichmentPage(credentialId); // This already reuses connected browser
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:622:            ownBrowser = false;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:623:        } else {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:624:            // PERFORMANCE FIX: Reuse a shared 
+background browser
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:625:            browser = await getSharedCrawlerBrowser();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:626:            page = await browser.newPage();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:627:            await page.setUserAgent('Mozilla/5.0 
+(Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:628:            ownBrowser = false; // We own the PAGE, 
+but not the BROWSER. So don't close browser.
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:629:        }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:630:    }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:631:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:632:    // Helper for unified progress reporting
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:633:    const emitStatus = (message: string) => {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:634:        if (!jobId || !io) return;
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:635:        if (jobId.startsWith('scan_')) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:636:            io.emit('scan-status', { scanJobId: 
+jobId, message });
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:637:        } else {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:638:            // Real job progress
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:639:            io.emit('job-progress', { jobId, status: 
+'running', message, progress: 0 });
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:640:        }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:641:    };
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:642:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:643:    console.log(`ðŸ§ [Smart Harvester] Analyzing: 
+${url}`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:644:    logDebug(`START_ANALYSIS: ${url} | Credential: 
+${credentialId || 'None'} | OwnBrowser: ${ownBrowser}`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:645:    emitStatus(`Explorando: A ler produtos...`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:646:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:647:    try {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:648:        if (ownBrowser) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:649:            // Robust Navigation
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:650:            await page.goto(url, { waitUntil: 
+'networkidle2', timeout: 60000 });
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:651:        } else {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:652:            await page.goto(url, { waitUntil: 
+'networkidle2', timeout: 60000 });
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:653:        }
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:654:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:655:        // ENABLE CONSOLE LOGS FROM BROWSER
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:656:        page.on('console', msg => console.log('PAGE 
+LOG:', msg.text()));
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:657:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:658:        emitStatus(`Explorando: A analisar 
+grelha...`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:659:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:660:        if (!options.noInteractions) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:661:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:662:            checkAbort();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:663:            // 0. General Cleanup (Cookies)
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:664:            await handleCookieConsent(page);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:665:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:666:            emitStatus(`ðŸ” Explorando botÃµes...`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:667:            checkAbort();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:668:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:669:            // PRE-INTERACTION: Click Content Tabs 
+(Safe & Fast Mode)
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:670:            await performHeuristicInteractions(page, 
+options.signal);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:671:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:672:            emitStatus(`ðŸ“œ Carregando lista 
+completa...`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:673:            checkAbort();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:674:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:675:            // PAGINATION & INFINITE SCROLL 
+(Universal)
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:676:            // DISABLED V2: User confirms PDPs have 
+all data loaded. Avoid hang.
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:677:            // await handleInfiniteScroll(page, 
+jobId);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:678:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:679:            checkAbort();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:680:
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:681:            // HEURISTIC: Navigation Drift Detection 
+(Crucial before specific scrapers)
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:682:            const midUrl = page.url().toLowerCase();
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:683:            const originalPath = 
+url.toLowerCase().split('?')[0].replace(/\/$/, '');
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:684:            if (!midUrl.includes(originalPath)) {
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:685:                console.log(`âšï¸ [Smart Harvester] 
+Pre-Discovery Drift detected (at ${midUrl}). Restoring ${url}...`);
+  src\modules\catalogEnricher\services\cePuppeteerService.ts:686:                await page.goto(url, { waitUntil: 
+'networkidle2', timeout: 30000 });
+
+

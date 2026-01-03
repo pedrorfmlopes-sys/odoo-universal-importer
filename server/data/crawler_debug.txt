@@ -12493,3 +12493,18 @@
 [2026-01-02T18:04:54.089Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=E0BA0115SX | Credential: None | OwnBrowser: false
 [2026-01-02T18:05:26.731Z] START_ANALYSIS: https://scarabeoceramiche.it/prodotto/bagno/lavabi/teorema/lavabo-da-appoggio-teorema-80x45/ | Credential: None | OwnBrowser: false
 [2026-01-02T18:05:31.073Z] CHECK_FILE: Name=Document Type=pdf URL=https://scarabeoceramiche.it/download/Progetto-Scarabeo_Apea.pdf
+[2026-01-02T18:43:10.460Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=068075_RCMB027&family=68052 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:16:05.042Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:21:47.359Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:22:55.040Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:32:13.785Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:34:04.821Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:38:39.791Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:40:29.111Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:42:03.694Z] START_ANALYSIS: https://www.ritmonio.it/en/bath-shower/product/?code=069929_PR51AZ102%2BE0BA0115SX%2BPR51MC102&family=69928 | Credential: test_cred_1766686125304 | OwnBrowser: false
+[2026-01-03T09:42:06.483Z] CHECK_FILE: Name=Asset Type=pdf URL=https://www.ritmonio.it/en/download/?code=3075992394
+[2026-01-03T09:42:07.710Z] DOWNLOAD_SUCCESS: Saved to C:\Users\pedro\OneDrive\APPS\GitHub\odoo-universal-importer\server\data\catalog-enricher\assets\ritmonio\SCH_PR51AZ102+E0BA0115SX+PR51MC102.pdf
+[2026-01-03T09:42:07.710Z] CHECK_FILE: Name=Asset Type=pdf URL=https://www.ritmonio.it/en/download/?code=683617466
+[2026-01-03T09:42:08.660Z] DOWNLOAD_SUCCESS: Saved to C:\Users\pedro\OneDrive\APPS\GitHub\odoo-universal-importer\server\data\catalog-enricher\assets\ritmonio\RM130708+RM130896.pdf
+[2026-01-03T09:42:08.660Z] CHECK_FILE: Name=3D Model Type=3d URL=https://www.ritmonio.it/en/download/?code=2589001691
+[2026-01-03T09:42:10.136Z] DOWNLOAD_SUCCESS: Saved to C:\Users\pedro\OneDrive\APPS\GitHub\odoo-universal-importer\server\data\catalog-enricher\assets\ritmonio\3D_PR51AZ102+E0BA0115SX+PR51MC102.zip

@@ -4,7 +4,6 @@ import { Server as SocketIOServer } from 'socket.io';
 import path from 'path';
 import { ceCredentialService } from './ceCredentialService';
 import { getCeDatabase } from '../db/ceDatabase';
-import { brandRegistry } from '../brands/brandRegistry';
 
 let browserInstance: Browser | null = null;
 let activePage: Page | null = null;
@@ -584,7 +583,7 @@ export const fetchPageContent = async (url: string): Promise<string> => {
 import { PageAnalysisResult, PageKind } from '../types/ceTypes';
 
 // V2: Smart Harvester + Page Analysis
-export const analyzePage = async (url: string, jobId?: string, options: { downloadAssets?: boolean, existingPage?: Page, noInteractions?: boolean, signal?: AbortSignal } = {}): Promise<{ html: string; metadata: PageAnalysisResult }> => {
+export const analyzePage = async (url: string, jobId?: string, options: { downloadAssets?: boolean, existingPage?: Page, noInteractions?: boolean, signal?: AbortSignal, credentialId?: string } = {}): Promise<{ html: string; metadata: PageAnalysisResult }> => {
     let browser: Browser | null = null;
     let page: Page;
     let ownBrowser = true;
@@ -604,7 +603,9 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
         ownBrowser = false;
     } else {
         // 2. Check Auth Requirement
-        if (jobId) {
+        if (options.credentialId) {
+            credentialId = options.credentialId;
+        } else if (jobId) {
             try {
                 const db = getCeDatabase();
                 const job = db.prepare('SELECT profile_id FROM ce_jobs WHERE id = ?').get(jobId) as { profile_id: string };
@@ -663,6 +664,21 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
             checkAbort();
             // 0. General Cleanup (Cookies)
             await handleCookieConsent(page);
+
+            // 0.1 VALIDATE PRODUCT PAGE (Ritmonio Specific)
+            // Validar que a página é PRODUTO: esperar por um seletor “de produto”
+            const productSelectors = ['h1', '.product-details', '.scheda-prodotto', '.nav-tabs'];
+            try {
+                // Quick check for at least ONE product indicator before spending time
+                await page.waitForFunction((selectors) => {
+                    return selectors.some(s => document.querySelector(s));
+                }, { timeout: 10000 }, productSelectors);
+                console.log("✅ [Validation] Product page confirmed.");
+            } catch (e) {
+                console.warn("⚠️ [Validation] Could not confirm product page (timeout). Dumping context...");
+                await page.screenshot({ path: path.join(process.cwd(), 'data', 'ritmonio_blocked.png') });
+                // We do not abort, but warn.
+            }
 
             emitStatus(`ðŸ” Explorando botÃµes...`);
             checkAbort();
@@ -795,9 +811,22 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
                     if (disallowPatterns.some(p => path.includes(p))) return;
 
                     // Asset Checks
-                    if (path.endsWith('.pdf')) {
+                    // Asset Checks
+                    if (path.endsWith('.pdf') || path.endsWith('.zip') || path.endsWith('.dwg') || path.endsWith('.step')) {
                         pdfs.push(link);
                         return;
+                    }
+                    // Ritmonio Special
+                    if (path.includes('/download/') && link.includes('code=')) {
+                        const text = (a.textContent || '').toLowerCase();
+                        if (text.includes('3d') || text.includes('model')) {
+                            pdfs.push(link + '#force_type=3d');
+                            return;
+                        }
+                        if (text.includes('sheet') || text.includes('instructions') || text.includes('scheda')) {
+                            pdfs.push(link + '#force_type=pdf');
+                            return;
+                        }
                     }
                     if (/\.(jpg|jpeg|png|webp)$/i.test(path)) {
                         images.push(link);
@@ -822,6 +851,27 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
                     }
                 });
 
+                // FALLBACK: Regex Scan for hidden files (JS/Scripts/Relative)
+                try {
+                    const html = document.body.innerHTML;
+                    // Match absolute or relative paths ending in extension
+                    const fileRegex = /(?:href=["']|src=["']|url\()([^\s"']+\.(?:zip|pdf|dwg|step))/gi;
+                    let match;
+                    while ((match = fileRegex.exec(html)) !== null) {
+                        let url = match[1];
+                        if (url) {
+                            // Resolve relative
+                            if (!url.startsWith('http') && !url.startsWith('//') && !url.startsWith('data:')) {
+                                try { url = new URL(url, currentUrl).href; } catch (e) { }
+                            }
+                            if (!pdfs.includes(url) && !images.includes(url)) {
+                                pdfs.push(url);
+                                console.log("Regex found file:", url);
+                            }
+                        }
+                    }
+                } catch (rxErr) { console.warn("Regex scan failed", rxErr); }
+
                 return {
                     url: currentUrl,
                     page_kind: products.length > 0 ? 'category' : 'unknown',
@@ -830,7 +880,15 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
                     debug_counts: { links_total: anchorsToUse.length, subcats_found: subcats.length, products_found: products.length },
                     extracted_data: {
                         productRefs: productRefs,
-                        files: [...new Set(pdfs)].map(f => ({ url: f, type: 'pdf', name: 'Document' })),
+                        files: [...new Set(pdfs)].map(f => {
+                            let type = 'pdf';
+                            let url = f;
+                            if (f.includes('#force_type=3d')) { type = '3d'; url = f.split('#')[0]; }
+                            else if (f.includes('#force_type=pdf')) { type = 'pdf'; url = f.split('#')[0]; }
+                            else if (f.endsWith('.zip')) type = '3d';
+                            else if (f.endsWith('.dwg')) type = 'cad';
+                            return { url: url, type: type, name: type === '3d' ? '3D Model' : 'Asset' };
+                        }),
                         gallery: [...new Set(images)] // Capture images if found in links
                     }
                 };
@@ -845,21 +903,16 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
         if (extractedData && extractedData.files && extractedData.files.length > 0) {
             // Determine Brand Subfolder
             let brandSubfolder = 'general';
-            const handler = brandRegistry.getHandler(url);
-            if (handler?.config?.assetSubfolder) {
-                brandSubfolder = handler.config.assetSubfolder;
-            } else if (url.includes('fimacf.com')) {
-                brandSubfolder = 'fima';
-            } else if (url.includes('ritmonio.it')) {
-                brandSubfolder = 'ritmonio';
-            }
+            if (url.includes('fimacf.com')) brandSubfolder = 'fima';
+            else if (url.includes('ritmonio.it')) brandSubfolder = 'ritmonio';
+            else if (url.includes('my-bette.com')) brandSubfolder = 'bette';
 
             const assetsDir = path.join(process.cwd(), 'data', 'catalog-enricher', 'assets', brandSubfolder);
             if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
 
             for (const file of extractedData.files) {
                 logDebug(`CHECK_FILE: Name=${file.name} Type=${file.type || 'N/A'} URL=${file.url}`);
-                if (file.type === '3d' || file.type === 'pdf') { // Allow PDF download too if requested
+                if (file.type === '3d' || file.type === 'pdf' || file.type === 'cad') { // Allow PDF download too if requested
                     // Decoupled Logic: Only physical download if requested
                     if (options.downloadAssets) {
                         try {
@@ -876,8 +929,44 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
                                     'Cookie': cookieString,
                                     'User-Agent': await page.browser().userAgent()
                                 },
-                                timeout: 60000
+                                timeout: 60000,
+                                validateStatus: (status) => status < 500 // Allow handling 403 manually
                             });
+
+                            // 4) Validar login obrigatório (Recover on 403)
+                            if ((response.status === 403 || response.status === 302 || response.status === 401) && credentialId) {
+                                console.log(`🔒 [Smart Harvester] Access Denied (${response.status}) for ${file.url}. Attempting Lazy Login...`);
+
+                                await performLogin(page, credentialId, { skipNavigation: true }); // Try in-place/interactive first or standard?
+                                // If the file is on a different domain or requires a full navigation login, this might be tricky.
+                                // But typically performLogin handles the flow.
+
+                                // Refresh cookies
+                                const newCookies = await page.cookies();
+                                const newCookieString = newCookies.map(c => `${c.name}=${c.value}`).join('; ');
+
+                                console.log(`🔄 [Smart Harvester] Retrying Download...`);
+                                const retryResponse = await axios({
+                                    method: 'GET',
+                                    url: file.url,
+                                    responseType: 'stream',
+                                    headers: {
+                                        'Cookie': newCookieString,
+                                        'User-Agent': await page.browser().userAgent()
+                                    },
+                                    timeout: 60000
+                                });
+
+                                if (retryResponse.status === 200) {
+                                    console.log(`✅ [Smart Harvester] Access Restored! Downloading...`);
+                                    response.data = retryResponse.data;
+                                    response.headers = retryResponse.headers;
+                                } else {
+                                    throw new Error(`Login attempt failed to restore access (Status: ${retryResponse.status})`);
+                                }
+                            } else if (response.status !== 200) {
+                                throw new Error(`Download failed with status ${response.status}`);
+                            }
 
                             // Determine Filename
                             let filename = path.basename(file.url).split('?')[0];
@@ -914,8 +1003,8 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
             }
         }
 
-        // Get HTML separately (Already done safely above)
-        // const html = await page.content(); 
+        // Get HTML separately
+        html = await page.content();
 
         // Premature close REMOVED
         // if (ownBrowser && browser) await browser.close();
@@ -1081,6 +1170,8 @@ export const performLogin = async (page: Page, credentialId: string, options: { 
             } else {
                 console.log(`ðŸ” [Auth] Navigating to Login URL: ${cred.service_url}`);
                 await page.goto(cred.service_url, { waitUntil: 'networkidle2', timeout: 60000 });
+                // Handle Cookies on Login Page
+                await handleCookieConsent(page);
             }
         } else {
             console.log("ðŸ” [Auth] Performing Interactive Login (Skipping Navigation)...");
@@ -1279,10 +1370,8 @@ export const handleInfiniteScroll = async (page: Page, jobId?: string) => {
 // Start Helper for Interaction
 export const performHeuristicInteractions = async (page: Page, signal?: AbortSignal) => {
     try {
-        console.log("ðŸ–±ï¸  [Heuristic] Interactions DISABLED for debugging.");
-        return;
-        const keywords = ["3D", "Tech", "Sheet", "Model", "DESCRIZIONE", "CARATTERISTICHE", "CERTIFICAZIONI", "RICAMBI", "AWARDS", "FINITURE", "MANIGLIE"]; // Removed DOWNLOAD
-        console.log("ðŸ–±ï¸ [Heuristic] Scanning for interaction candidates...");
+        const keywords = ["3D", "Tech", "Sheet", "Model", "DESCRIZIONE", "CARATTERISTICHE", "CERTIFICAZIONI", "RICAMBI", "AWARDS", "FINITURE", "MANIGLIE", "DOWNLOAD", "SCARICA"];
+        console.log("🖱️ [Heuristic] Scanning for interaction candidates...");
 
         for (const kw of keywords) {
             if (signal?.aborted) throw new Error('AbortError');
@@ -1332,6 +1421,67 @@ export const performHeuristicInteractions = async (page: Page, signal?: AbortSig
 
 export const handleCookieConsent = async (page: Page) => {
     try {
+        console.log("🍪 [Cookies] Checking for consent dialogs...");
+        // 1. Ritmonio / Cookiebot (Priority)
+        try {
+            // Detect modal #CybotCookiebotDialog
+            const cookiebotDialog = await page.$('#CybotCookiebotDialog');
+            if (cookiebotDialog) {
+                console.log("🍪 [Cookies] Cookiebot detected.");
+                // Click 'Allow All' - try multiple ID variations
+                const allowIds = [
+                    '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll',
+                    '#CybotCookiebotDialogBodyButtonAccept',
+                    '#CybotCookiebotDialogBodyButtonDecline', // Beware mechanism
+                    '.CybotCookiebotDialogBodyButton'
+                ];
+
+                let clicked = false;
+                for (const id of allowIds) {
+                    const btn = await page.$(id);
+                    if (btn) {
+                        const text = await page.evaluate(el => (el as HTMLElement).innerText, btn);
+                        if (text && (text.toLowerCase().includes('allow') || text.toLowerCase().includes('accept') || text.toLowerCase().includes('accetta'))) {
+                            console.log(`🍪 [Cookies] Clicking Cookiebot Accept: ${id} (${text})`);
+                            await btn.click();
+                            clicked = true;
+                            break;
+                        }
+                        if (id.includes('AllowAll') || id.includes('Accept')) {
+                            console.log(`🍪 [Cookies] Clicking Cookiebot Accept: ${id}`);
+                            await btn.click();
+                            clicked = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!clicked) {
+                    clicked = await page.evaluate(() => {
+                        const btns = Array.from(document.querySelectorAll('button, a'));
+                        const target = btns.find(b => {
+                            const t = (b as HTMLElement).innerText || '';
+                            return t.toLowerCase().includes('allow all') || t.toLowerCase().includes('accetta tutti');
+                        });
+                        if (target) {
+                            (target as HTMLElement).click();
+                            return true;
+                        }
+                        return false;
+                    });
+                    if (clicked) console.log(`🍪 [Cookies] Clicked 'Allow/Accept' via text fallback.`);
+                }
+
+                if (clicked) {
+                    await page.waitForFunction(() => !document.querySelector('#CybotCookiebotDialog'), { timeout: 5000 }).catch(() => { });
+                    console.log("🍪 [Cookies] Cookiebot cleared.");
+                    return;
+                }
+            }
+        } catch (botErr) {
+            console.warn("⚠️ Cookiebot specific verify failed", botErr);
+        }
+
         // Generic & Specific Selectors for Cookie Consent
         const cookieSelectors = [
             '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll', // Cookiebot
@@ -1349,7 +1499,8 @@ export const handleCookieConsent = async (page: Page) => {
                     if (vis) {
                         console.log(`ðŸª [Cookies] Found and clicking consent button: ${sel}`);
                         await btn.click();
-                        await new Promise(r => setTimeout(r, 1000)); // Wait for dismissal
+                        console.log("ðŸ ª [Cookies] Clicked. Waiting 5s for settling...");
+                        await new Promise(r => setTimeout(r, 5000)); // Increased wait for dismissal/reload
                         return; // Found one, assume done
                     }
                 }
