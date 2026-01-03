@@ -14,3 +14,17 @@ server/data/importer.db-*
 server/temp_downloads/
 server/exports/
 server/debug_*
+
+# Agent Cleanup - Strict Ignores
+data/crawler_debug.txt
+data/crawler_debug*.txt
+server/data/crawler_debug.txt
+server/data/crawler_debug*.txt
+
+# Assets (Do not delete, just ignore)
+data/catalog-enricher/assets/
+server/data/catalog-enricher/assets/
+assets/
+
+# Root Data DB artifacts
+data/importer.db-*
