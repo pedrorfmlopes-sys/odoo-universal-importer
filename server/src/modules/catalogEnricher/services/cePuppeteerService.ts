@@ -588,7 +588,7 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
     let page: Page;
     let ownBrowser = true;
     let credentialId: string | undefined = undefined;
-    let variants: any[] = [];
+    let variants: any[] | { variants: any[], finishes: any[] } = [];
     let associated: any[] = [];
     let html = ''; // Initialize html variable
 
@@ -1030,9 +1030,37 @@ export const analyzePage = async (url: string, jobId?: string, options: { downlo
         else await page.close();
 
         // Merge V3 Data (Variants & Associated)
-        if (variants && variants.length > 0) {
+        // Merge V3 Data (Variants & Associated)
+        const vResult = variants as any;
+        const hasData = variants && (Array.isArray(variants) ? variants.length > 0 : (vResult.variants?.length > 0 || vResult.finishes?.length > 0 || vResult.richFeatures || vResult.finishReason));
+
+        if (hasData) {
             if (!harvesterData.extracted_data) (harvesterData.extracted_data as any) = {};
-            (harvesterData.extracted_data as any).variants = variants;
+
+            const variantsList = Array.isArray(variants) ? variants : vResult.variants || [];
+
+            if (variantsList.length > 0) {
+                (harvesterData.extracted_data as any).variants = variantsList;
+            }
+
+            // Merge Rich Features
+            if (vResult.richFeatures) {
+                if (!(harvesterData.extracted_data as any).richFeatures) (harvesterData.extracted_data as any).richFeatures = {};
+                Object.assign((harvesterData.extracted_data as any).richFeatures, vResult.richFeatures);
+            }
+
+            // Compat: Finishes list
+            if (vResult.finishes?.length > 0) {
+                if (!(harvesterData.extracted_data as any).richFeatures) (harvesterData.extracted_data as any).richFeatures = {};
+                (harvesterData.extracted_data as any).richFeatures.finishes = vResult.finishes;
+            }
+
+            // Propagate Reason
+            if (vResult.finishReason) {
+                (harvesterData.extracted_data as any).finishReason = vResult.finishReason;
+                if (!(harvesterData.extracted_data as any).richFeatures) (harvesterData.extracted_data as any).richFeatures = {};
+                (harvesterData.extracted_data as any).richFeatures.finishReason = vResult.finishReason;
+            }
         }
         if (associated && associated.length > 0) {
             if (!harvesterData.extracted_data) (harvesterData.extracted_data as any) = {};
@@ -1516,8 +1544,12 @@ export const handleCookieConsent = async (page: Page) => {
  * Detects and extracts product variants (finishes/colors).
  * Specific logic for Fima (iframe 3D) and generic fallback for swatches.
  */
-export const handleProductVariants = async (page: Page): Promise<any[]> => {
+export const handleProductVariants = async (page: Page): Promise<any[] | { variants: any[], finishes: any[], richFeatures?: any, finishReason?: string }> => {
     const variants: any[] = [];
+    const finishes: any[] = [];
+    let richFeatures: any = { finishGroups: [] };
+    let finishReason = 'not-found';
+
     try {
         const url = page.url();
         console.log(`ðŸŽ¨ [Variants] Checking variants for: ${url}`);
@@ -1555,26 +1587,208 @@ export const handleProductVariants = async (page: Page): Promise<any[]> => {
             return variants;
         }
 
-        // 2. GENERIC SWATCH DETECTION (WooCommerce, etc.)
-        const swatches = await page.evaluate(() => {
-            const selectors = ['.swatch', '.variable-item', '.tmcp-field-wrap', '.finiture-item'];
-            const found: any[] = [];
-            selectors.forEach(sel => {
-                document.querySelectorAll(sel).forEach(el => {
-                    const name = el.getAttribute('data-value') || el.getAttribute('title') || el.textContent?.trim();
-                    if (name) found.push({ name, selector: sel });
-                });
-            });
-            return found;
-        });
+        // 2. SCARABEO SPECIFIC PARSER
+        if (url.includes('scarabeoceramiche.it')) {
+            console.log("ðŸŽ¨ [Variants] Scarabeo detected. Using custom finish parser...");
 
-        if (swatches.length > 0) {
-            console.log(`ðŸŽ¨ [Variants] Found ${swatches.length} generic swatches.`);
-            // Implement generic click-and-wait-for-image-update logic here if needed
-        }
+            const extraction = await page.evaluate(() => {
+                const result = {
+                    finishGroups: [] as any[],
+                    finishes: [] as any[],
+                    finishReason: 'not-found'
+                };
+
+                const getImg = (el: Element) => {
+                    const img = el.querySelector('img');
+                    if (img) return img.getAttribute('src') || img.getAttribute('data-src') || '';
+                    const style = window.getComputedStyle(el);
+                    if (style.backgroundImage && style.backgroundImage !== 'none') {
+                        return style.backgroundImage.slice(5, -2).replace(/['"]/g, "");
+                    }
+                    return '';
+                };
+
+                const parseLabel = (raw: string) => {
+                    const codeMatch = raw.match(/^([A-Z]*\d+|\d+|[A-Z]{2,5})\s+(.*)/);
+                    if (codeMatch) {
+                        return { code: codeMatch[1], name: codeMatch[2].trim() };
+                    }
+                    return { code: '', name: raw.trim() };
+                };
+
+                // MODE 1: WooCommerce Standard
+                const form = document.querySelector('form.variations_form');
+                if (form) {
+                    result.finishReason = 'parsed-woo';
+                    form.querySelectorAll('tr').forEach(tr => {
+                        const labelEl = tr.querySelector('.label label');
+                        const groupName = labelEl ? labelEl.textContent?.trim() || 'Options' : 'Options';
+
+                        const options: any[] = [];
+                        const valueCell = tr.querySelector('.value');
+
+                        const items = valueCell?.querySelectorAll('.variable-item');
+                        if (items && items.length > 0) {
+                            items.forEach(item => {
+                                const tooltip = item.getAttribute('data-wvstooltip') || item.getAttribute('title') || '';
+                                const val = item.getAttribute('data-value') || '';
+                                const { code, name } = parseLabel(tooltip || val);
+                                const img = getImg(item);
+                                if (name) options.push({ code, name, image: img, value: val });
+                            });
+                        } else {
+                            const select = valueCell?.querySelector('select');
+                            if (select) {
+                                Array.from(select.options).forEach(opt => {
+                                    if (!opt.value) return;
+                                    const { code, name } = parseLabel(opt.textContent || opt.value);
+                                    options.push({ code, name, value: opt.value, image: '' });
+                                });
+                            }
+                        }
+                        if (options.length > 0) result.finishGroups.push({ name: groupName, options });
+                    });
+                }
+
+                // MODE 2: Section Based
+                if (result.finishGroups.length === 0) {
+                    const headers = Array.from(document.querySelectorAll('div, h2, h3, h4, span, p')).filter(el => {
+                        const txt = el.textContent?.toLowerCase().trim() || '';
+                        return txt.includes('varianti colore') || txt.includes('color variants') || (txt === 'variations');
+                    });
+
+                    if (headers.length > 0) {
+                        result.finishReason = 'no-variants-listed';
+                        const table = document.querySelector('table.variations');
+                        if (table) {
+                            result.finishReason = 'parsed-section';
+                            table.querySelectorAll('tr').forEach(tr => {
+                                const th = tr.querySelector('th.label');
+                                const td = tr.querySelector('td.value');
+                                if (th && td) {
+                                    let groupName = th.textContent?.replace("Scegli un'opzione", "").trim() || 'Options';
+                                    const lbl = th.querySelector('label');
+                                    if (lbl) groupName = lbl.textContent?.trim() || groupName;
+                                    groupName = groupName.trim();
+
+                                    const options: any[] = [];
+                                    td.querySelectorAll('.variable-item').forEach(item => {
+                                        const tooltip = item.getAttribute('data-wvstooltip') || item.getAttribute('title') || '';
+                                        const val = item.getAttribute('data-value') || '';
+                                        const { code, name } = parseLabel(tooltip || val);
+                                        const img = getImg(item);
+                                        if (name) options.push({ code, name, image: img, value: val });
+                                    });
+
+                                    if (options.length > 0) {
+                                        result.finishGroups.push({ name: groupName, options });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
+                if (result.finishGroups.length > 0) {
+                    result.finishGroups.forEach(g => {
+                        g.options.forEach((o: any) => {
+                            result.finishes.push({
+                                group: g.name,
+                                code: o.code,
+                                name: o.name,
+                                value: o.value,
+                                swatchImageUrl: o.image
+                            });
+                        });
+                    });
+                }
+
+                return result;
+            });
+
+            richFeatures.finishGroups = extraction.finishGroups;
+            finishReason = extraction.finishReason;
+            finishes.push(...extraction.finishes);
+
+            console.log(`ðŸŽ¨ [Scarabeo] Extracted ${finishes.length} finishes in ${richFeatures.finishGroups.length} groups. Reason: ${finishReason}`);
+
+        } else {
+            // 2. GENERIC SWATCH DETECTION (WooCommerce, etc.)
+            const foundSwatches = await page.evaluate(() => {
+                const selectors = ['.swatch', '.variable-item', '.tmcp-field-wrap', '.finiture-item'];
+                let foundElements: Element[] = [];
+
+                for (const sel of selectors) {
+                    const els = document.querySelectorAll(sel);
+                    if (els.length > 0) {
+                        foundElements = Array.from(els);
+                        break;
+                    }
+                }
+
+                if (foundElements.length === 0) return [];
+
+                const items: any[] = [];
+
+                foundElements.forEach((el) => {
+                    const dataAttr = el.getAttribute('data-attribute_name') || '';
+                    const tooltip = el.getAttribute('data-wvstooltip') || el.getAttribute('title') || el.getAttribute('data-title') || '';
+                    const value = el.getAttribute('data-value') || '';
+                    const img = el.querySelector('img');
+
+                    // Group logic
+                    let group = dataAttr;
+                    if (dataAttr.includes('glossy')) group = 'glossy';
+                    else if (dataAttr.includes('matt')) group = 'matt';
+
+                    // Code/Name logic
+                    // Regex: Start with digits (code), rest is name.
+                    // e.g. "35 NIGHT" -> code="35", name="NIGHT"
+                    const codeMatch = tooltip.match(/^(\d+)/);
+                    const code = codeMatch ? codeMatch[1] : '';
+                    const name = tooltip.replace(/^\d+\s*/, '').trim() || tooltip;
+
+                    // Image URL
+                    // Check src or data-src
+                    let swatchImageUrl = '';
+                    if (img) {
+                        swatchImageUrl = img.getAttribute('src') || img.getAttribute('data-src') || '';
+                    }
+
+                    if (value && swatchImageUrl) {
+                        items.push({
+                            group,
+                            code,
+                            name,
+                            value,
+                            swatchImageUrl
+                        });
+                    }
+                });
+                return items;
+            });
+
+            if (foundSwatches.length > 0) {
+                console.log(`ðŸŽ¨ [Variants] Found ${foundSwatches.length} general swatches (converted to finishes).`);
+
+                // Deduplicate
+                const unique = new Map();
+                foundSwatches.forEach((s: any) => {
+                    const key = `${s.group}-${s.value}`;
+                    if (!unique.has(key)) unique.set(key, s);
+                });
+                finishes.push(...unique.values());
+            }
+        } // End else Scarabeo
 
     } catch (e: any) {
         console.error("ðŸŽ¨ [Variants] Discovery failed:", e.message);
+    }
+
+    // Return Object if we have finishes or specific reason (e.g. no-variants-listed)
+    // otherwise Array for backward compat
+    if (finishes.length > 0 || finishReason !== 'not-found') {
+        return { variants, finishes, richFeatures, finishReason };
     }
     return variants;
 };
